@@ -84,7 +84,7 @@ int WINAPI WinMain(
 	//device를 생성하기 전에, device를 통해서 화면에 어떻게 보여질지를 결정
 	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory(&d3dpp, sizeof(d3dpp));
-	d3dpp.BackBufferWidth = 12380;
+	d3dpp.BackBufferWidth = 1280;
 	d3dpp.BackBufferHeight = 768;
 	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
 	d3dpp.BackBufferCount = 1;		//더블 버퍼링 갯수
