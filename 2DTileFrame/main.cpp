@@ -90,8 +90,12 @@ int WINAPI WinMain(
 	d3dpp.BackBufferCount = 1;		//더블 버퍼링 갯수
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	d3dpp.hDeviceWindow = hWnd;
-	d3dpp.Windowed = true;
+	d3dpp.Windowed = true;		//윈도우 창모드 사용 여부
 	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+
+	//device 생성 요청
+	LPDIRECT3DDEVICE9 dxDevice;
+	HRESULT hr = direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &dxDevice);
 
 
 	float fps = 60.0f;
@@ -131,7 +135,7 @@ int WINAPI WinMain(
 				frameTime = 0.0f;	//다시 0으로 만든다
 				
 				//directX를 사용했을 때 가장 기본적인 모습
-				dxDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 128, 0), 0, 0.0f, 0);	//화면의 색을 매 프레임마다 채운다
+				dxDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(180, 255, 255), 0.0f, 0);	//화면의 색을 매 프레임마다 채운다
 				dxDevice->Present(NULL, NULL, NULL, NULL);	//채운 색을 모니터를 통해 보여준다
 
 			}
