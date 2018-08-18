@@ -71,6 +71,29 @@ int WINAPI WinMain(
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 
+	//directX
+	//누군가(directX)한테 하드웨어에 집적 접근할 수 있는 무언가(dxDevice)를 생성해 달라고 요청
+	LPDIRECT3D9 direct3d;	//그래픽을 담당하는 directX
+	direct3d = Direct3DCreate9(D3D_SDK_VERSION);
+	//윈도우가 안주면 끝낸다
+	if (NULL == direct3d)
+	{
+		return 0;
+	}
+
+	//device를 생성하기 전에, device를 통해서 화면에 어떻게 보여질지를 결정
+	D3DPRESENT_PARAMETERS d3dpp;
+	ZeroMemory(&d3dpp, sizeof(d3dpp));
+	d3dpp.BackBufferWidth = 12380;
+	d3dpp.BackBufferHeight = 768;
+	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
+	d3dpp.BackBufferCount = 1;		//더블 버퍼링 갯수
+	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+	d3dpp.hDeviceWindow = hWnd;
+	d3dpp.Windowed = true;
+	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+
+
 	float fps = 60.0f;
 	float frameInterval = 1.0f / fps;		// "f" means = 실수.
 	float frameTime = 0.0f;
@@ -106,8 +129,10 @@ int WINAPI WinMain(
 			if (frameInterval <= frameTime)
 			{
 				frameTime = 0.0f;	//다시 0으로 만든다
-				// todo : game update. 60fps
-				OutputDebugString("UPdate\n");
+				
+				//directX를 사용했을 때 가장 기본적인 모습
+				dxDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 128, 0), 0, 0.0f, 0);	//화면의 색을 매 프레임마다 채운다
+				dxDevice->Present(NULL, NULL, NULL, NULL);	//채운 색을 모니터를 통해 보여준다
 
 			}
 		}
