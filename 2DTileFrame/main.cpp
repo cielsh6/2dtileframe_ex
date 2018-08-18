@@ -31,6 +31,10 @@ int WINAPI WinMain(
 	int nCmdShow	// 응용프로그램 표시 방식. 최소화/최대화 해서 보여줄거냐 겨렂
 )
 {
+	int width = 1024;
+	int height = 768;
+	bool isWindow = true;
+	
 	// 윈도우 스타일을 만들고
 	WNDCLASS wc;
 	wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -56,7 +60,7 @@ int WINAPI WinMain(
 		"2D Tile Frmae",
 		WS_OVERLAPPEDWINDOW,	// 윈도우 스타일
 		CW_USEDEFAULT, CW_USEDEFAULT,	// 시작위치 :  x, y
-		1024, 768,		// 해상도. 너비/높이
+		width, height,		// 해상도. 너비/높이
 		0,		// 부모 창의 핸들. 사용 안함
 		0,		// 메뉴 핸들. 사용 안함
 		hInstance,	// OS와 윈도우 연결. OS에서 윈도우를 관리할 수 있다.
@@ -71,6 +75,14 @@ int WINAPI WinMain(
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 
+	//윈도우 모드일때 실제 게임 영역 확보
+	if (true == isWindow)
+	{
+		RECT clientRect;
+		GetClientRect(hWnd, &clientRect);
+		MoveWindow(hWnd, 0, 0, width + (width - clientRect.right), height + (height - clientRect.bottom), TRUE);
+	}
+
 	//directX
 	//누군가(directX)한테 하드웨어에 집적 접근할 수 있는 무언가(dxDevice)를 생성해 달라고 요청
 	LPDIRECT3D9 direct3d;	//그래픽을 담당하는 directX
@@ -84,19 +96,23 @@ int WINAPI WinMain(
 	//device를 생성하기 전에, device를 통해서 화면에 어떻게 보여질지를 결정
 	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory(&d3dpp, sizeof(d3dpp));
-	d3dpp.BackBufferWidth = 1280;
-	d3dpp.BackBufferHeight = 768;
+	d3dpp.BackBufferWidth = width;
+	d3dpp.BackBufferHeight = height;
 	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
 	d3dpp.BackBufferCount = 1;		//더블 버퍼링 갯수
-	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;	//교체시킬때 사용할 이펙트
 	d3dpp.hDeviceWindow = hWnd;
-	d3dpp.Windowed = true;		//윈도우 창모드 사용 여부
-	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+	d3dpp.Windowed = isWindow;		//윈도우 창모드 사용 여부
+	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;		//교체할때 즉시 보여줘라
 
 	//device 생성 요청
 	LPDIRECT3DDEVICE9 dxDevice;
 	HRESULT hr = direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &dxDevice);
-
+	//생성에 실패하면 프로그램 종료
+	if (FAILED(hr))
+	{
+		return 0;
+	}
 
 	float fps = 60.0f;
 	float frameInterval = 1.0f / fps;		// "f" means = 실수.
