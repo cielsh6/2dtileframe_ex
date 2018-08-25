@@ -1,5 +1,5 @@
 #include <Windows.h>
-#include <d3d9.h>
+#include <d3dx9.h>
 #include "GameTimer.h"
 
 
@@ -9,7 +9,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg)
 	{
 	case WM_LBUTTONDOWN:
-		MessageBox(0, "Hello World", "Hello", MB_OK);
+		MessageBox(0, L"Hello World", L"Hello", MB_OK);
 		return 0;
 	case WM_KEYDOWN:
 		if (VK_ESCAPE == wParam)
@@ -33,7 +33,7 @@ int WINAPI WinMain(
 {
 	int width = 1024;
 	int height = 768;
-	bool isWindow = false;
+	bool isWindow = true;
 	
 	// 윈도우 스타일을 만들고
 	WNDCLASS wc;
@@ -46,7 +46,7 @@ int WINAPI WinMain(
 	wc.hCursor = LoadCursor(0, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	wc.lpszMenuName = 0;
-	wc.lpszClassName = "2DTileFrameWnd";			// 이 윈도우 스타일의 이름
+	wc.lpszClassName = L"2DTileFrameWnd";			// 이 윈도우 스타일의 이름
 
 	// 만든 윈도우 스타일 등록
 	if (FALSE == RegisterClass(&wc))
@@ -68,8 +68,8 @@ int WINAPI WinMain(
 
 	// 창 핸들(아이디)를 먼저 발급을 받자
 	HWND hWnd = CreateWindow(
-		"2DTileFrameWnd",	// 사용할 윈도우 스타일 이름. OS에 등록 되어있음.
-		"2D Tile Frmae",
+		L"2DTileFrameWnd",	// 사용할 윈도우 스타일 이름. OS에 등록 되어있음.
+		L"2D Tile Frmae",
 		style,	//윈도우 스타일. 캡션이 있을 것인지 메뉴가 있을 것인지 등등
 		CW_USEDEFAULT, CW_USEDEFAULT,	// 시작위치 :  x, y
 		width, height,		// 해상도. 너비/높이
@@ -137,6 +137,60 @@ int WINAPI WinMain(
 		return 0;
 	}
 
+	//sprite COM 인터페이스 생성
+	ID3DXSprite* spriteDX;
+	hr = D3DXCreateSprite(dxDevice, &spriteDX);
+	if (FAILED(hr))
+	{
+		return 0;
+	}
+
+	//이미지 로드
+	IDirect3DTexture9* textureDX;
+	RECT textureRect;
+	D3DCOLOR textureColor;
+	{
+		//로드 할 파일 명
+		LPCWSTR fileName = L"../Resources/Image/character_1.png";
+
+		//파일로부터 이미지의 너비와 높이를 얻는다
+		D3DXIMAGE_INFO texInfo;
+		hr = D3DXGetImageInfoFromFile(fileName, &texInfo);
+		if (FAILED(hr))
+		{
+			return 0;
+		}
+
+		//이미지 데이타 로드
+		hr = D3DXCreateTextureFromFileEx(dxDevice, 
+			fileName, 
+			texInfo.Width, texInfo.Height, 
+			1, 
+			0, 
+			D3DFMT_UNKNOWN, 
+			D3DPOOL_DEFAULT, 
+			D3DX_DEFAULT, 
+			D3DX_DEFAULT, 
+			D3DCOLOR_ARGB(255, 255, 255, 255), 
+			&texInfo, 
+			NULL, 
+			&textureDX);
+		if (FAILED(hr))
+		{
+			return 0;
+		}
+
+		//출력할 영역
+		textureRect.left = 0;
+		textureRect.right = textureRect.left + texInfo.Width;
+		textureRect.top = 0;
+		textureRect.bottom = textureRect.top + texInfo.Height;
+
+
+		textureColor = D3DCOLOR_ARGB(255, 255, 255, 255);	//알파채널에 255를 넣고 rgb에 255씩 넣는다 = 흰색으로 한다 = 원본 그대로 쓴다
+	}
+
+
 	float fps = 60.0f;
 	float frameInterval = 1.0f / fps;		// "f" means = 실수.
 	float frameTime = 0.0f;
@@ -175,6 +229,19 @@ int WINAPI WinMain(
 				
 				//directX를 사용했을 때 가장 기본적인 모습
 				dxDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(180, 255, 255), 0.0f, 0);	//화면의 색을 매 프레임마다 채운다
+				{
+					dxDevice->BeginScene();
+					{
+						//scene 작업 : 게임 화면과 관련된 모든 작업 공간
+						spriteDX->Begin(0);
+						{
+							// 2D 이미지(texture) 출력 공간
+							spriteDX->Draw(textureDX, &textureRect, NULL, NULL, textureColor);
+						}
+						spriteDX->End();
+					}
+					dxDevice->EndScene();
+				}
 				dxDevice->Present(NULL, NULL, NULL, NULL);	//채운 색을 모니터를 통해 보여준다
 
 			}
