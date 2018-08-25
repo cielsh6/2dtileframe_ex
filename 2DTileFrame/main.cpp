@@ -151,7 +151,7 @@ int WINAPI WinMain(
 	D3DCOLOR textureColor;
 	{
 		//로드 할 파일 명
-		LPCWSTR fileName = L"../Resources/Image/character_1.png";
+		LPCWSTR fileName = L"../Resources/Image/character_2.png";
 
 		//파일로부터 이미지의 너비와 높이를 얻는다
 		D3DXIMAGE_INFO texInfo;
@@ -233,7 +233,7 @@ int WINAPI WinMain(
 					dxDevice->BeginScene();
 					{
 						//scene 작업 : 게임 화면과 관련된 모든 작업 공간
-						spriteDX->Begin(0);
+						spriteDX->Begin(D3DXSPRITE_ALPHABLEND);
 						{
 							// 2D 이미지(texture) 출력 공간
 							spriteDX->Draw(textureDX, &textureRect, NULL, NULL, textureColor);
