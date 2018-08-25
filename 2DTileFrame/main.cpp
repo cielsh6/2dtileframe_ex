@@ -33,7 +33,7 @@ int WINAPI WinMain(
 {
 	int width = 1024;
 	int height = 768;
-	bool isWindow = true;
+	bool isWindow = false;
 	
 	// 윈도우 스타일을 만들고
 	WNDCLASS wc;
@@ -54,11 +54,23 @@ int WINAPI WinMain(
 		return 0;
 	}
 
+	//fullscreen 모드일 때는, 윈도우에 부가적인 요소를 제거한다
+	DWORD style;
+	if (isWindow)
+	{
+		style = WS_OVERLAPPEDWINDOW;
+	}
+	else
+	{
+		style = WS_EX_TOPMOST | WS_VISIBLE | WS_POPUP;
+	}
+
+
 	// 창 핸들(아이디)를 먼저 발급을 받자
 	HWND hWnd = CreateWindow(
 		"2DTileFrameWnd",	// 사용할 윈도우 스타일 이름. OS에 등록 되어있음.
 		"2D Tile Frmae",
-		WS_OVERLAPPEDWINDOW,	// 윈도우 스타일
+		style,	//윈도우 스타일. 캡션이 있을 것인지 메뉴가 있을 것인지 등등
 		CW_USEDEFAULT, CW_USEDEFAULT,	// 시작위치 :  x, y
 		width, height,		// 해상도. 너비/높이
 		0,		// 부모 창의 핸들. 사용 안함
@@ -93,12 +105,23 @@ int WINAPI WinMain(
 		return 0;
 	}
 
+
+	D3DFORMAT format;
+	if (isWindow)
+	{
+		format = D3DFMT_UNKNOWN;	//윈도우 설정에 맡김
+	}
+	else
+	{
+		format = D3DFMT_X8R8G8B8;	// 풀스크린이면 전용 색상 포맷을 사용하겠다
+	}
+
 	//device를 생성하기 전에, device를 통해서 화면에 어떻게 보여질지를 결정
 	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory(&d3dpp, sizeof(d3dpp));
 	d3dpp.BackBufferWidth = width;
 	d3dpp.BackBufferHeight = height;
-	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
+	d3dpp.BackBufferFormat = format;
 	d3dpp.BackBufferCount = 1;		//더블 버퍼링 갯수
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;	//교체시킬때 사용할 이펙트
 	d3dpp.hDeviceWindow = hWnd;
@@ -156,6 +179,19 @@ int WINAPI WinMain(
 
 			}
 		}
+	}
+
+	//COM인터페이스를 지우는 가장 일반적인 방법
+	if (dxDevice)
+	{
+		dxDevice->Release();
+		dxDevice = NULL;
+	}
+
+	if (direct3d)
+	{
+		direct3d->Release();
+		direct3d = NULL;
 	}
 
 	return 0;
