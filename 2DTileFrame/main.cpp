@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <d3dx9.h>
 #include "GameTimer.h"
+#include "Sprite.h"
 
 
 // 윈도우 프로시저 함수 : 윈도우로 부터 받은 이벤트를 처리하는 함수 (내가 처리한다)
@@ -153,47 +154,11 @@ int WINAPI WinMain(
 	//로드 할 파일 명
 	LPCWSTR fileName = L"../Resources/Image/character_2.png";
 
-	//파일로부터 이미지의 너비와 높이를 얻는다
-	D3DXIMAGE_INFO texInfo;
+	// 스프라이트를 생성
+	Sprite* testSprite = new Sprite();
+	testSprite->Init(fileName, dxDevice, spriteDX);
 
-	{
-
-		hr = D3DXGetImageInfoFromFile(fileName, &texInfo);
-		if (FAILED(hr))
-		{
-			return 0;
-		}
-
-		//이미지 데이타 로드
-		hr = D3DXCreateTextureFromFileEx(dxDevice, 
-			fileName, 
-			texInfo.Width, texInfo.Height, 
-			1, 
-			0, 
-			D3DFMT_UNKNOWN, 
-			D3DPOOL_DEFAULT, 
-			D3DX_DEFAULT, 
-			D3DX_DEFAULT, 
-			D3DCOLOR_ARGB(255, 255, 255, 255), 
-			&texInfo, 
-			NULL, 
-			&textureDX);
-		if (FAILED(hr))
-		{
-			return 0;
-		}
-
-		//출력할 영역
-		textureRect.left = 0;
-		textureRect.right = textureRect.left + texInfo.Width;
-		textureRect.top = 0;
-		textureRect.bottom = textureRect.top + texInfo.Height;
-
-
-		textureColor = D3DCOLOR_ARGB(255, 255, 255, 255);	//알파채널에 255를 넣고 rgb에 255씩 넣는다 = 흰색으로 한다 = 원본 그대로 쓴다
-	}
-
-
+	
 	float fps = 60.0f;
 	float frameInterval = 1.0f / fps;		// "f" means = 실수.
 	float frameTime = 0.0f;
@@ -235,11 +200,14 @@ int WINAPI WinMain(
 				{
 					dxDevice->BeginScene();
 					{
+						
+
 						//scene 작업 : 게임 화면과 관련된 모든 작업 공간
 						spriteDX->Begin(D3DXSPRITE_ALPHABLEND);
 						{
-							// 2D 이미지(texture) 출력 공간
-							spriteDX->Draw(textureDX, &textureRect, NULL, NULL, textureColor);
+							//스프라이트 랜더
+							testSprite->Render();
+
 						}
 						spriteDX->End();
 					}
@@ -261,11 +229,14 @@ int WINAPI WinMain(
 							//여전히 망가진 상태이지만, 이제는 복구가 가능한 상태
 							//지금부터 복구를 진행하시오
 							//기존에 만들어진 것들을 모두 리셋 -> 새로 생성
+							testSprite->Release();
+							/*
 							if (textureDX)
 							{
 								textureDX->Release();
 								textureDX = NULL;
 							}
+							*/
 
 							direct3d = Direct3DCreate9(D3D_SDK_VERSION);
 							if (NULL != direct3d)
@@ -281,7 +252,9 @@ int WINAPI WinMain(
 								
 								if (SUCCEEDED(hr))
 								{
+									testSprite->Reset();
 
+									/*
 									//텍스쳐 생성
 									hr = D3DXCreateTextureFromFileEx(dxDevice,
 										fileName,
@@ -296,6 +269,7 @@ int WINAPI WinMain(
 										&texInfo,
 										NULL,
 										&textureDX);
+									*/
 								}
 							}
 						}
@@ -310,7 +284,20 @@ int WINAPI WinMain(
 		}
 	}
 
-	//COM인터페이스를 지우는 가장 일반적인 방법
+	//COM인터페이스를 지우는 가장 일반적인 방법	
+	//텍스쳐 해제는 스프라이트가 파괴될 때
+	if (NULL != testSprite)
+	{
+		delete testSprite;
+	}
+	/*
+	if (textureDX)
+	{
+		textureDX->Release();
+		textureDX = NULL;
+	}
+	*/
+		
 	if (dxDevice)
 	{
 		dxDevice->Release();
