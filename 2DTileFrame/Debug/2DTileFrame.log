@@ -1,2 +1,11 @@
-﻿  Sprite.cpp
+﻿  main.cpp
+d:\2d_tile_frame\2d_tile_frame\2dtileframe\main.cpp(151): warning C4101: 'textureRect' :참조되지 않은 지역 변수입니다.
+d:\2d_tile_frame\2d_tile_frame\2dtileframe\main.cpp(150): warning C4101: 'textureDX' :참조되지 않은 지역 변수입니다.
+d:\2d_tile_frame\2d_tile_frame\2dtileframe\main.cpp(152): warning C4101: 'textureColor' :참조되지 않은 지역 변수입니다.
+  Sprite.cpp
+d:\2d_tile_frame\2d_tile_frame\2dtileframe\sprite.cpp(11): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+d:\2d_tile_frame\2d_tile_frame\2dtileframe\sprite.cpp(103): warning C4018: '<=': signed 또는 unsigned가 일치하지 않습니다.
+d:\2d_tile_frame\2d_tile_frame\2dtileframe\sprite.cpp(112): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+d:\2d_tile_frame\2d_tile_frame\2dtileframe\sprite.cpp(139): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  코드를 생성하고 있습니다...
   2DTileFrame.vcxproj -> D:\2D_Tile_Frame\2D_Tile_Frame\Debug\2DTileFrame.exe

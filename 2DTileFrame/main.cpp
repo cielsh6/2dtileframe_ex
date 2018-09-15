@@ -189,6 +189,8 @@ int WINAPI WinMain(
 			gameTimer.Update();
 			float deltaTime = gameTimer.GetDeltaTime();
 
+			testSprite->Update(deltaTime);
+			
 			// deltaTime : 이전 윈도우 업데이트부터 지금까지 흐른 시간
 			frameTime += deltaTime;
 			if (frameInterval <= frameTime)
