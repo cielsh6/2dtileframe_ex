@@ -1,6 +1,4 @@
-﻿  Sprite.cpp
-d:\2d_tile_frame\2d_tile_frame\2dtileframe\sprite.cpp(11): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-d:\2d_tile_frame\2d_tile_frame\2dtileframe\sprite.cpp(105): warning C4018: '<=': signed 또는 unsigned가 일치하지 않습니다.
-d:\2d_tile_frame\2d_tile_frame\2dtileframe\sprite.cpp(114): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-d:\2d_tile_frame\2d_tile_frame\2dtileframe\sprite.cpp(141): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+﻿  Frame.cpp
+d:\2d_tile_frame\2d_tile_frame\2dtileframe\frame.cpp(28): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\2d_tile_frame\2d_tile_frame\2dtileframe\frame.cpp(40): warning C4244: '인수': 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   2DTileFrame.vcxproj -> D:\2D_Tile_Frame\2D_Tile_Frame\Debug\2DTileFrame.exe
